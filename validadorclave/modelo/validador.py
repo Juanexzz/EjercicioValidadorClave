@@ -1,5 +1,12 @@
 from abc import ABC, abstractmethod
-
+from .errores import (
+    NoCumpleLongitudMinimaError,
+    NoTieneCaracterEspecialError,
+    NoTieneLetraMayusculaError,
+    NoTieneLetraMinusculaError,
+    NoTieneNumeroError,
+    NoTienePalabraSecretaError
+)
 
 class ReglaValidacion(ABC):
     def __init__(self, longitud_esperada: int):
@@ -21,6 +28,7 @@ class ReglaValidacion(ABC):
     def es_valida(self, clave: str) -> bool:
         pass
 
+
 class ReglaValidacionGanimedes(ReglaValidacion):
     def __init__(self):
         super().__init__(8)
@@ -30,16 +38,19 @@ class ReglaValidacionGanimedes(ReglaValidacion):
 
     def es_valida(self, clave: str) -> bool:
         if not self._validar_longitud(clave):
-            return False
+            raise NoCumpleLongitudMinimaError(
+                f"La clave debe tener una longitud de más de {self._longitud_esperada} caracteres")
         if not self._contiene_mayuscula(clave):
-            return False
+            raise NoTieneLetraMayusculaError("La clave debe contener al menos una letra mayúscula")
         if not self._contiene_minuscula(clave):
-            return False
+            raise NoTieneLetraMinusculaError("La clave debe contener al menos una letra minuscula")
         if not self._contiene_numero(clave):
-            return False
+            raise NoTieneNumeroError("La clave debe contener al menos un número")
         if not self.contiene_caracter_especial(clave):
-            return False
+            raise NoTieneCaracterEspecialError(
+                "La clave debe contener al menos uno de los caracteres especiales @, _, #, $ o %")
         return True
+
 
 class ReglaValidacionCalisto(ReglaValidacion):
     def __init__(self):
@@ -56,13 +67,10 @@ class ReglaValidacionCalisto(ReglaValidacion):
         mayusculas = sum(1 for c in palabra_calisto if c.isupper())
         return 2 <= mayusculas < 7
 
-    def es_valida(self, clave: str) -> bool:
-        if not self._validar_longitud(clave):
-            return False
-        if not self._contiene_numero(clave):
-            return False
-        if not self.contiene_calisto(clave):
-            return False
+    def es_valida(self, clave):
+        self._validar_longitud(clave)
+        self._contiene_numero(clave)
+        self.contiene_calisto(clave)
         return True
 
 
@@ -72,6 +80,5 @@ class Validador:
 
     def es_valida(self, clave: str) -> bool:
         return self.regla.es_valida(clave)
-
 
 
