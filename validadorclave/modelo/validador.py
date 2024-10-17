@@ -20,3 +20,26 @@ class ReglaValidacion(ABC):
     @abstractmethod
     def es_valida(self, clave: str) -> bool:
         pass
+
+class ReglaValidacionGanimedes(ReglaValidacion):
+    def __init__(self):
+        super().__init__(8)
+
+    def contiene_caracter_especial(self, clave: str) -> bool:
+        return any(c in '@_#$%' for c in clave)
+
+    def es_valida(self, clave: str) -> bool:
+        if not self._validar_longitud(clave):
+            return False
+        if not self._contiene_mayuscula(clave):
+            return False
+        if not self._contiene_minuscula(clave):
+            return False
+        if not self._contiene_numero(clave):
+            return False
+        if not self.contiene_caracter_especial(clave):
+            return False
+        return True
+
+
+
