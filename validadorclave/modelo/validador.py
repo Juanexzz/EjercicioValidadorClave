@@ -76,6 +76,8 @@ class ReglaValidacionCalisto(ReglaValidacion):
         if not self.contiene_calisto(clave):
             raise NoTienePalabraSecretaError("La clave debe contener la palabra 'calisto'")
 
+        return True
+
 
 class Validador:
     def __init__(self, regla: ReglaValidacion):
