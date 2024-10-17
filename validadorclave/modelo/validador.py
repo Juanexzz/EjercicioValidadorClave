@@ -41,5 +41,32 @@ class ReglaValidacionGanimedes(ReglaValidacion):
             return False
         return True
 
+class ReglaValidacionCalisto(ReglaValidacion):
+    def __init__(self):
+        super().__init__(6)
+
+    def contiene_calisto(self, clave: str) -> bool:
+        clave_lower = clave.lower()
+        if "calisto" not in clave_lower:
+            return False
+
+        indice = clave_lower.index("calisto")
+        palabra_calisto = clave[indice:indice + 7]
+
+        mayusculas = sum(1 for c in palabra_calisto if c.isupper())
+        return 2 <= mayusculas < 7
+
+    def es_valida(self, clave: str) -> bool:
+        if not self._validar_longitud(clave):
+            return False
+        if not self._contiene_numero(clave):
+            return False
+        if not self.contiene_calisto(clave):
+            return False
+        return True
+
+
+
+
 
 
